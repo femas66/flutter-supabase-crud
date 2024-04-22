@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:crud_superbase/edit.dart';
 import 'package:crud_superbase/tambah.dart';
+import 'package:crud_superbase/upload_gambar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         HomePage.routeName: (context) => const HomePage(),
         TambahScreen.routeName: (context) => const TambahScreen(),
         EditScreen.routeName: (context) => const EditScreen(),
+        UploadGambar.routeName: (context) => const UploadGambar(),
       },
     );
   }
@@ -92,11 +94,22 @@ class _HomePageState extends State<HomePage> {
           // Return your widget with the data from the snapshot
         },
       ),
-      floatingActionButton: ElevatedButton(
-        child: Text("Tanbah"),
-        onPressed: () {
-          Navigator.pushNamed(context, TambahScreen.routeName);
-        },
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, UploadGambar.routeName);
+            },
+            child: const Text("Gambar"),
+          ),
+          ElevatedButton(
+            child: Text("Tanbah"),
+            onPressed: () {
+              Navigator.pushNamed(context, TambahScreen.routeName);
+            },
+          ),
+        ],
       ),
     );
   }
