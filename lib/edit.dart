@@ -27,7 +27,7 @@ class _EditScreenState extends State<EditScreen> {
                 await Supabase.instance.client
                     .from('city')
                     .update({"name": cName.text}).eq('id', args);
-                Navigator.pushReplacementNamed(context, HomePage.routeName);
+                Navigator.pop(context);
               },
               child: Text("Simpan"))
         ],

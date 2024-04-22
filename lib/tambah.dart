@@ -26,8 +26,7 @@ class _TambahScreenState extends State<TambahScreen> {
                 await Supabase.instance.client
                     .from('city')
                     .insert({"name": cName.text});
-                Navigator.pushReplacementNamed(
-                                      context, HomePage.routeName);
+                Navigator.pop(context);
               },
               child: Text("Tambah"))
         ],

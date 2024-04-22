@@ -13,9 +13,14 @@ Future<void> main() async {
   await Supabase.initialize(
     url: dotenv.get('URL'),
     anonKey: dotenv.get('ANON_KEY'),
+    realtimeClientOptions: const RealtimeClientOptions(
+      eventsPerSecond: 2,
+    ),
   );
   runApp(const MyApp());
 }
+
+final supabase = Supabase.instance.client;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -34,6 +39,10 @@ class MyApp extends StatelessWidget {
   }
 }
 
+void handleInserts(payload) {
+  print('Change received! $payload');
+}
+
 class HomePage extends StatefulWidget {
   static const String routeName = '/home';
   const HomePage({super.key});
@@ -43,63 +52,55 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _notesStream =
-      Supabase.instance.client.from('city').stream(primaryKey: ['id']);
+  final _stream = supabase.from('city').stream(primaryKey: ['id']);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, TambahScreen.routeName);
-              },
-              child: Text("Tambah")),
-          StreamBuilder<List<Map<String, dynamic>>>(
-              stream: _notesStream,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
+      body: StreamBuilder(
+        stream: _stream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var users = snapshot.data!;
+            return ListView.builder(
+                itemCount: users.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(users[index]['name']),
+                    subtitle: Row(
+                      children: [
+                        ElevatedButton(
+                          child: Text("Edit"),
+                          onPressed: () {
+                            Navigator.pushNamed(context, EditScreen.routeName,
+                                arguments: users[index]['id']);
+                          },
+                        ),
+                        ElevatedButton(
+                          child: Text("Hapus"),
+                          onPressed: () async {
+                            await Supabase.instance.client
+                                .from('city')
+                                .delete()
+                                .eq('id', users[index]['id']);
+                          },
+                        ),
+                      ],
+                    ),
                   );
-                } else {
-                  final users = snapshot.data!;
-                  print(users);
-                  return ListView.builder(
-                      itemCount: users.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(users[index]['name']),
-                          subtitle: Row(
-                            children: [
-                              ElevatedButton(
-                                child: Text("Edit"),
-                                onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, EditScreen.routeName,
-                                      arguments: users[index]['id']);
-                                },
-                              ),
-                              ElevatedButton(
-                                child: Text("Hapus"),
-                                onPressed: () async {
-                                  await Supabase.instance.client
-                                      .from('city')
-                                      .delete()
-                                      .eq('id', users[index]['id']);
-                                  Navigator.pushReplacementNamed(
-                                      context, HomePage.routeName);
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      });
-                }
-              })
-        ],
+                });
+          } else {
+            return const CircularProgressIndicator();
+          }
+          // Return your widget with the data from the snapshot
+        },
+      ),
+      floatingActionButton: ElevatedButton(
+        child: Text("Tanbah"),
+        onPressed: () {
+          Navigator.pushNamed(context, TambahScreen.routeName);
+        },
       ),
     );
   }
