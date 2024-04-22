@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Countries',
+      title: 'City',
       initialRoute: HomePage.routeName,
       routes: {
         HomePage.routeName: (context) => const HomePage(),
@@ -37,10 +37,6 @@ class MyApp extends StatelessWidget {
       },
     );
   }
-}
-
-void handleInserts(payload) {
-  print('Change received! $payload');
 }
 
 class HomePage extends StatefulWidget {
