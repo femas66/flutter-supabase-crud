@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:crud_superbase/chat_screen.dart';
 import 'package:crud_superbase/edit.dart';
 import 'package:crud_superbase/tambah.dart';

@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -57,16 +56,16 @@ class _ChatScreenState extends State<ChatScreen> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Container(
+      floatingActionButton: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
               width: 300,
               child: TextField(
                 controller: cMessage,
-                decoration: InputDecoration(hintText: "Masukan pesan"),
+                decoration: const InputDecoration(hintText: "Masukan pesan"),
               ),
             ),
             ElevatedButton(

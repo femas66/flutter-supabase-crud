@@ -1,4 +1,3 @@
-import 'package:crud_superbase/main.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -26,9 +25,10 @@ class _TambahScreenState extends State<TambahScreen> {
                 await Supabase.instance.client
                     .from('city')
                     .insert({"name": cName.text});
+                // ignore: use_build_context_synchronously
                 Navigator.pop(context);
               },
-              child: Text("Tambah"))
+              child: const Text("Tambah"))
         ],
       ),
     );

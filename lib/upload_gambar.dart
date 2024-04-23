@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'dart:math';
 
@@ -17,39 +16,52 @@ class UploadGambar extends StatefulWidget {
 final supabase = Supabase.instance.client;
 
 class _UploadGambarState extends State<UploadGambar> {
-  File? selectedFile;
+  bool _isLoading = false;
   void _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png'],
-    );
+    if (!_isLoading) {
+      // pilih file
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png'],
+      );
 
-    if (result != null) {
-      setState(() {
-        selectedFile = File(result.files.single.path!);
-      });
+      if (result != null) {
+        File selectedFile = File(result.files.single.path!);
+        setState(() {
+          _isLoading = true;
+        });
 
-      // ekstensi file
-      String extensionFile = selectedFile!.path.split('.').last;
+        // angka acak
+        int length = 8;
+        String randomNumbers = String.fromCharCodes(
+            List.generate(length, (index) => Random().nextInt(10) + 48));
+        // ekstensi file
+        String extensionFile = selectedFile.path.split('.').last;
 
-      // angka acak
-      int length = 8;
-      String randomNumbers = String.fromCharCodes(
-          List.generate(length, (index) => Random().nextInt(10) + 48));
+        //nma fle
+        String fileName = "$randomNumbers.$extensionFile";
 
-      final path = await supabase.storage.from('photos').upload(
-            "$randomNumbers.$extensionFile",
-            File(result.files.single.path!),
-            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
-          );
-      final String signedUrl = await supabase.storage
-          .from('photos')
-          .createSignedUrl("$randomNumbers.$extensionFile", 10000);
-      print(signedUrl);
-      await supabase.from('photos').insert({"photo": signedUrl});
+        // upload ke srver
+        await supabase.storage.from('photos').upload(
+              fileName,
+              File(result.files.single.path!),
+              fileOptions:
+                  const FileOptions(cacheControl: '3600', upsert: false),
+            );
+
+        // mengambil publik url filenya
+        final urlDownload =
+            supabase.storage.from('photos').getPublicUrl(fileName);
+
+        // insert ke server
+        await supabase.from('photos').insert({"photo": urlDownload});
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
-
+  // stream photos
   final _stream = supabase.from('photos').stream(primaryKey: ['id']);
 
   @override
@@ -57,7 +69,11 @@ class _UploadGambarState extends State<UploadGambar> {
     return Scaffold(
       body: Column(
         children: [
-          ElevatedButton(onPressed: _pickFile, child: Text("Pilih file")),
+          const SizedBox(
+            height: 24,
+          ),
+          ElevatedButton(onPressed: _pickFile, child: const Text("Pilih file")),
+          Visibility(visible: _isLoading, child: const CircularProgressIndicator()),
           StreamBuilder(
             stream: _stream,
             builder: (context, snapshot) {
