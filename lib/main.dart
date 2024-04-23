@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:crud_superbase/chat_screen.dart';
 import 'package:crud_superbase/edit.dart';
 import 'package:crud_superbase/tambah.dart';
 import 'package:crud_superbase/upload_gambar.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         TambahScreen.routeName: (context) => const TambahScreen(),
         EditScreen.routeName: (context) => const EditScreen(),
         UploadGambar.routeName: (context) => const UploadGambar(),
+        ChatScreen.routeName: (context) => const ChatScreen(),
       },
     );
   }
@@ -107,6 +109,12 @@ class _HomePageState extends State<HomePage> {
             child: Text("Tanbah"),
             onPressed: () {
               Navigator.pushNamed(context, TambahScreen.routeName);
+            },
+          ),
+          ElevatedButton(
+            child: Text("Chat"),
+            onPressed: () {
+              Navigator.pushNamed(context, ChatScreen.routeName);
             },
           ),
         ],
