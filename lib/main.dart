@@ -1,5 +1,6 @@
 import 'package:crud_superbase/chat_screen.dart';
 import 'package:crud_superbase/edit.dart';
+import 'package:crud_superbase/jadwal_lapangan.dart';
 import 'package:crud_superbase/tambah.dart';
 import 'package:crud_superbase/upload_gambar.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,8 @@ class MyApp extends StatelessWidget {
         EditScreen.routeName: (context) => const EditScreen(),
         UploadGambar.routeName: (context) => const UploadGambar(),
         ChatScreen.routeName: (context) => const ChatScreen(),
+        JadwalLapanganScreen.routeName: (context) =>
+            const JadwalLapanganScreen(),
       },
     );
   }
