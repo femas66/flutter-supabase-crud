@@ -28,7 +28,7 @@ class _EditScreenState extends State<EditScreen> {
                     .update({"name": cName.text}).eq('id', args);
                 Navigator.pop(context);
               },
-              child: Text("Simpan"))
+              child: const Text("Simpan"))
         ],
       ),
     );
