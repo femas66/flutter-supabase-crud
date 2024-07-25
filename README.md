@@ -1,3 +1,3 @@
 # crud_superbase
 
-A new Flutter project.
+Aplikasi CRUD sederhana dengan flutter Supabase
